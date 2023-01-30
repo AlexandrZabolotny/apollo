@@ -1,1 +1,1 @@
-channel_name: "/apollo/sensor/camera/right_front/image"
+channel_name: "/apollo/sensor/camera/CAM_FRONT_RIGHT/image"

@@ -225,6 +225,7 @@ bool ObstacleDetectionCamera::Process(DataFrame *data_frame) {
   CameraFrame *frame = data_frame->camera_frame;
   frame->camera_k_matrix =
       name_intrinsic_map_.at(frame->data_provider->sensor_name());
+AERROR << "1_1"; //zabolotny
   for (size_t i = 1; i < camera_names_.size(); ++i) {
     if (camera_names_.size() == 2) {
       continue;
@@ -234,7 +235,11 @@ bool ObstacleDetectionCamera::Process(DataFrame *data_frame) {
       name_intrinsic_map_.at(frame->data_provider->sensor_name());
     }
   }
+AERROR << "1_2"; //zabolotny
+
   InnerProcess(data_frame);
+AERROR << "1_3"; //zabolotny
+
 
   if (camera_detection_config_.has_debug_param()) {
     if (camera_detection_config_.debug_param().has_camera2world_out_file()) {
@@ -244,6 +249,7 @@ bool ObstacleDetectionCamera::Process(DataFrame *data_frame) {
       WriteTracking(out_track_, frame->frame_id, frame->tracked_objects);
     }
   }
+AERROR << "1_4"; //zabolotny
 
   // Save tracked detections results as kitti format
   WriteDetections(
@@ -252,12 +258,15 @@ bool ObstacleDetectionCamera::Process(DataFrame *data_frame) {
           camera_detection_config_.debug_param().tracked_detection_out_dir(),
           "/", frame->frame_id, ".txt"),
       frame->tracked_objects);
+AERROR << "1_5"; //zabolotny
 
   // Fill polygon and set anchor point
   for (auto &obj : frame->tracked_objects) {
     FillObjectPolygonFromBBox3D(obj.get());
     obj->anchor_point = obj->center;
   }
+ AERROR << "1_6"; //zabolotny
+ 
   return true;
 }
 

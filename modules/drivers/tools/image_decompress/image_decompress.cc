@@ -51,7 +51,7 @@ bool ImageDecompressComponent::Proc(
   image->set_width(mat_image.cols);
   image->set_height(mat_image.rows);
   // Now olny rgb
-  image->set_encoding("rgb8");
+  image->set_encoding("rgb8"); //rgb8
   image->set_step(3 * image->width());
 
   auto size = mat_image.step * mat_image.rows;

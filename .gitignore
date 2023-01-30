@@ -82,3 +82,8 @@ tools/FlameGraph
 .DS_Store
 
 #WORKSPACE
+
+#network
+modules/perception/production/data/perception/camera/models/petr_v2
+modules/perception/production/data/perception/camera/models/petr_v1
+modules/perception/production/data/perception/camera/models/caddn

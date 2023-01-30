@@ -45,6 +45,8 @@ bool BEVObstacleDetector::Init(const StageConfig &stage_config) {
   LoadExtrinsics(stage_config.camera_detector_config().lidar_extrinsics_file(),
                  &imu2lidar_matrix_rt_);
 
+  AERROR << stage_config.camera_detector_config().camera_name();
+
   paddle::AnalysisConfig config;
   config.EnableUseGpu(1000, FLAGS_gpu_id);
   config.SetModel(FLAGS_bev_model_file, FLAGS_bev_params_file);
@@ -84,9 +86,9 @@ bool BEVObstacleDetector::Process(DataFrame *data_frame) {
   std::vector<float> k_data;
   Timer timer;
   float scale = 1.0f;
+AERROR << "1_2_1";
   for (int i = 0; i < 6; ++i) {
     const auto camera_frame_temp = (data_frame + i)->camera_frame;
-
     std::shared_ptr<base::Image8U> image_temp = nullptr;
     image_temp.reset(
         new base::Image8U(image_height_, image_width_, base::Color::RGB));
@@ -131,6 +133,8 @@ bool BEVObstacleDetector::Process(DataFrame *data_frame) {
 
     k_data.insert(k_data.end(), img2lidar_vec.begin(), img2lidar_vec.end());
   }
+AERROR << "1_2_2";
+
   ++cnt_1;
   AINFO << "Preprocess: " << static_cast<double>(timer.Toc()) * 0.001 << "ms";
 
@@ -141,15 +145,17 @@ bool BEVObstacleDetector::Process(DataFrame *data_frame) {
   AINFO << "images_data size:" << images_data.size();
   Run(predictor_.get(), images_shape_, images_data, k_shape_, k_data_, &boxes,
       &scores, &labels);
+AERROR << "1_2_3";
 
   AINFO << "Inference: " << static_cast<double>(timer.Toc()) * 0.001 << "ms";
 
   std::vector<float> out_detections_final;
   std::vector<int64_t> out_labels_final;
   std::vector<float> out_scores_final;
-  float threshold = 0.8;
+  float threshold = 0.5; //zabolotny it was 0.8
   FilterScore(boxes, labels, scores, threshold,
               &out_detections_final, &out_labels_final, &out_scores_final);
+AERROR << "1_2_4";
 
   AINFO << "images_data size: " << images_data.size();
   AINFO << "k_data size: " << k_data.size();
@@ -161,6 +167,8 @@ bool BEVObstacleDetector::Process(DataFrame *data_frame) {
     GetObjects(detections_apollo_frame, out_labels_final, out_scores_final,
                data_frame->camera_frame);
   }
+AERROR << "1_2_5";
+
   return true;
 }
 
@@ -232,6 +240,7 @@ void BEVObstacleDetector::Run(
     const std::vector<float> &images_data, const std::vector<int> &k_shape,
     const std::vector<float> &k_data, std::vector<float> *boxes,
     std::vector<float> *scores, std::vector<int64_t> *labels) {
+AERROR << "1_2_2_1";  
   auto input_names = predictor->GetInputNames();
   auto in_tensor0 = predictor->GetInputHandle(input_names[0]);
   in_tensor0->Reshape(images_shape);
@@ -242,7 +251,11 @@ void BEVObstacleDetector::Run(
   in_tensor1->CopyFromCpu(k_data.data());
 
   // auto start_time = std::chrono::steady_clock::now();
+AERROR << "1_2_2_2";  
+
   ACHECK(predictor->Run());
+AERROR << "1_2_2_3";  
+
   AINFO << "finish run!!!!";
   auto output_names = predictor->GetOutputNames();
   for (size_t i = 0; i != output_names.size(); i++) {
@@ -270,6 +283,7 @@ void BEVObstacleDetector::Run(
 
 bool BEVObstacleDetector::LoadExtrinsics(const std::string &yaml_file,
                                          Eigen::Matrix4d *camera_extrinsic) {
+  AERROR << 111;
   if (!apollo::cyber::common::PathExists(yaml_file)) {
     AINFO << yaml_file << " does not exist!";
     return false;
@@ -282,6 +296,7 @@ bool BEVObstacleDetector::LoadExtrinsics(const std::string &yaml_file,
   double tx = 0.0;
   double ty = 0.0;
   double tz = 0.0;
+  AERROR << 222;
   try {
     if (node.IsNull()) {
       AINFO << "Load " << yaml_file << " failed! please check!";
@@ -294,6 +309,14 @@ bool BEVObstacleDetector::LoadExtrinsics(const std::string &yaml_file,
     tx = node["transform"]["translation"]["x"].as<double>();
     ty = node["transform"]["translation"]["y"].as<double>();
     tz = node["transform"]["translation"]["z"].as<double>();
+
+    AERROR << "qw= " << qw;
+        AERROR << "qx= " << qx;
+            AERROR << "qy= " << qy;
+                AERROR << "qz= " << qz;
+                    AERROR << "x= " << tx;
+                        AERROR << "y= " << ty;
+                            AERROR << "z= " << tz;
   } catch (YAML::InvalidNode &in) {
     AERROR << "load camera extrisic file " << yaml_file
            << " with error, YAML::InvalidNode exception";

@@ -259,6 +259,7 @@ bool CameraBevDetectionComponent::Proc(
     AERROR << "camerafront msg is not ready!";
     return false;
   }
+  AERROR << "Began proc!!! "; //zabolotny
   camera::CameraFrame &camf_frame = camera_frames_[0];
   const std::string &camf_name = camera_names_[0];
   FillCamMessage(camf_msg, camf_name, &camf_frame);
@@ -326,11 +327,12 @@ bool CameraBevDetectionComponent::Proc(
 
   dataframe_ptrs_ = {data_frame_camf, data_frame_camfr, data_frame_camfl,
                      data_frame_camb, data_frame_cambl, data_frame_cambr};
-
+AERROR << 1;
   if (!camera_obstacle_pipeline_->Process(&dataframe_ptrs_[0])) {
     AERROR << "bev_obstacle_pipeline_->Process() failed";
     return cyber::FAIL;
   }
+AERROR << 2;
 
   auto camera_frame = *(data_frame_camf.camera_frame);
 
@@ -344,10 +346,13 @@ bool CameraBevDetectionComponent::Proc(
 
     return cyber::FAIL;
   }
+AERROR << 3;
 
   if (output_final_obstacles_) {
     writer_->Write(out_message);
   }
+AERROR << 4;
+
   return true;
 }
 
@@ -380,6 +385,7 @@ void CameraBevDetectionComponent::FillCamMessage(
   camera_frame->timestamp = msg_timestamp;
 
   ++frame_id_;
+  AERROR << camera_name << "t= " << msg_timestamp << "frame_id_= " << frame_id_; //zabolotny
 }
 
 void CameraBevDetectionComponent::OnReceiveImage(

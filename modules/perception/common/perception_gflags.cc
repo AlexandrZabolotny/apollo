@@ -133,7 +133,7 @@ DEFINE_int32(
     "Whether to load the tensorrt graph optimization from a disk path");
 DEFINE_string(
     trt_static_dir,
-    "/apollo/modules/perception/lidar/lib/detector/center_point_detection/",
+    "/apollo/modules/perception/lidar/lib/detector/center_point_detection/", ///apollo/modules/perception/lidar/lib/detector/center_point_detection/
     "Path of a tensorrt graph optimization directory");
 DEFINE_int32(collect_shape_info, 1,
              "Whether to collect dynamic shape before using tensorrt");

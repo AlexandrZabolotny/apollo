@@ -112,7 +112,7 @@ bool Pipeline::InnerProcess(DataFrame* frame) {
     if (stage_ptr->IsEnabled()) {
       double start_time = apollo::cyber::Clock::NowInSeconds();
       bool res = stage_ptr->Process(frame);
-      AINFO << "Stage: " << stage_ptr->Name()
+      AERROR << "Stage: " << stage_ptr->Name() //zabolotny
             << " Cost: " << apollo::cyber::Clock::NowInSeconds() - start_time;
       if (!res) {
         AERROR << "Pipeline: " << name_ << " Stage : " << stage_ptr->Name()
