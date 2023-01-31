@@ -161,7 +161,7 @@ options:
     default: false
     menuId: perceptionPointCloud
   showPerceptionLaneMarker:
-    default: false
+    default: true
     menuId: perceptionLaneMarker
   showObstaclesVehicle:
     default: true
@@ -266,11 +266,11 @@ routingEditor:
 
 navigation:
   # possible options: BaiduMap or GoogleMap
-  map: "BaiduMap"
+  map: "GoogleMap"
 
   # Google Map API: "https://maps.google.com/maps/api/js"
   # Baidu Map API: "https://api.map.baidu.com/api?v=3.0&ak=0kKZnWWhXEPfzIkklmzAa3dZ&callback=initMap"
-  mapAPiUrl: "https://api.map.baidu.com/api?v=3.0&ak=0kKZnWWhXEPfzIkklmzAa3dZ&callback=initMap"
+  mapAPiUrl: "https://maps.google.com/maps/api/js"
 
 debug:
   # Turn this on for monitor related debugging
