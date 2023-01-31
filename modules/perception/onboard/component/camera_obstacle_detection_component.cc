@@ -44,6 +44,7 @@ static void fill_lane_msg(const base::LaneLineCubicCurve &curve_coord,
   lane_marker->set_c1_heading_angle(curve_coord.c);
   lane_marker->set_c2_curvature(curve_coord.b);
   lane_marker->set_c3_curvature_derivative(curve_coord.a);
+  lane_marker->set_view_range(curve_coord.x_end); //zabolotny
   lane_marker->set_longitude_start(curve_coord.x_start);
   lane_marker->set_longitude_end(curve_coord.x_end);
 }

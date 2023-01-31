@@ -56,7 +56,7 @@
 # novatel to world frame id.
 # type: string
 # default:
---obs_novatel2world_tf2_frame_id=world
+--obs_novatel2world_tf2_frame_id=velodyne128
 
 # novatel to world child frame id.
 # type: string

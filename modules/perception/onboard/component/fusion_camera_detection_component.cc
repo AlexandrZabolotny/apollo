@@ -44,6 +44,7 @@ static void fill_lane_msg(const base::LaneLineCubicCurve &curve_coord,
   lane_marker->set_c1_heading_angle(curve_coord.c);
   lane_marker->set_c2_curvature(curve_coord.b);
   lane_marker->set_c3_curvature_derivative(curve_coord.a);
+  lane_marker->set_view_range(curve_coord.x_end); //zabolotny //curve_coord.x_end
   lane_marker->set_longitude_start(curve_coord.x_start);
   lane_marker->set_longitude_end(curve_coord.x_end);
 }
@@ -582,7 +583,7 @@ int FusionCameraDetectionComponent::InitProjectMatrix() {
   }
   AINFO << "project_matrix_: " << project_matrix_;
   AINFO << "pitch_diff_:" << pitch_diff_;
-  name_camera_pitch_angle_diff_map_[camera_names_[0]] = 0.f;
+  name_camera_pitch_angle_diff_map_[camera_names_[0]] = static_cast<float>(pitch_diff_); //0.f; //zabolotny
   name_camera_pitch_angle_diff_map_[camera_names_[1]] =
       static_cast<float>(pitch_diff_);
 
