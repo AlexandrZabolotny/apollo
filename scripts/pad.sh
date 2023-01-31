@@ -20,7 +20,7 @@ TOP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 source "${TOP_DIR}/scripts/apollo_base.sh"
 
 function start() {
-  ${TOP_DIR}/bazel-bin/modules/control/tools/pad_terminal \
+  ${TOP_DIR}/bazel-bin/modules/planning/tools/pad_terminal \
     --log_dir=${APOLLO_ROOT_DIR}/data/log
 }
 
