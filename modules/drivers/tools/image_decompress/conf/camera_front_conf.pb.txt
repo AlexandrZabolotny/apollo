@@ -1,1 +1,1 @@
-channel_name: "/apollo/sensor/camera/obstacle/front_6mm"
+channel_name: "/apollo/sensor/camera/front_6mm/image"

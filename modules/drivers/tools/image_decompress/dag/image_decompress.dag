@@ -5,7 +5,7 @@ module_config {
     components {
       class_name : "ImageDecompressComponent"
       config {
-        name : "camera_front_6mm_decompress"
+        name : "camera_front_decompress"
         config_file_path : "/apollo/modules/drivers/tools/image_decompress/conf/camera_front_6mm.pb.txt"
         readers {
           channel: "/apollo/sensor/camera/CAM_FRONT/image/compressed"
@@ -26,17 +26,17 @@ module_config {
       }
     }
 
-    # components {
-    #   class_name : "ImageDecompressComponent"
-    #   config {
-    #     name : "camera_front_fisheye_decompress"
-    #     config_file_path : "/apollo/modules/drivers/tools/image_decompress/conf/camera_front_fisheye.pb.txt"
-    #     readers {
-    #       channel: "/apollo/sensor/camera/front_fisheye/image/compressed"
-    #       pending_queue_size: 10
-    #     }
-    #   }
-    # }
+    components {
+      class_name : "ImageDecompressComponent"
+      config {
+        name : "camera_front_6mm_decompress"
+        config_file_path : "/apollo/modules/drivers/tools/image_decompress/conf/camera_front_conf.pb.txt"
+        readers {
+          channel: "/apollo/sensor/camera/front_6mm/image/compressed"
+          pending_queue_size: 10
+        }
+      }
+    }
 
     components {
       class_name : "ImageDecompressComponent"
