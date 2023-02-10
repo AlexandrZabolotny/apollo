@@ -33,7 +33,7 @@ function create_data_dir() {
   local DATA_DIR="${APOLLO_ROOT_DIR}/data"
   mkdir -p "${DATA_DIR}/log"
   mkdir -p "${DATA_DIR}/bag"
-  mkdir -p "${DATA_DIR}/core"
+  #mkdir -p "${DATA_DIR}/core" #zabolotny
 }
 
 function determine_bin_prefix() {
