@@ -12,7 +12,7 @@ model_param {
   mean_g: 99
   mean_r: 96
   is_bgr: true
-  confidence_threshold: 0.5
+  confidence_threshold: 0.05
   vpt_mean_dx: 0.0
   vpt_mean_dy: -77.284
   vpt_std_dx: 103.109

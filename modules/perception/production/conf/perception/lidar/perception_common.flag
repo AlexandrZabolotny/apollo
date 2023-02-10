@@ -87,4 +87,4 @@
 --start_visualizer=false
 --lidar_model_version=velodyne128
 
---lidar_sensor_name=lidar16
+--lidar_sensor_name=velodyne128
