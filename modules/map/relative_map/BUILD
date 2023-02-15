@@ -50,6 +50,7 @@ cc_library(
         "//modules/map/relative_map/proto:relative_map_config_cc_proto",
         "//modules/common_msgs/perception_msgs:perception_obstacle_cc_proto",
     ],
+    alwayslink = True,
 )
 
 cc_library(
@@ -71,6 +72,7 @@ cc_library(
         "//modules/map/relative_map/proto:relative_map_config_cc_proto",
         "@com_google_absl//:absl",
     ],
+    alwayslink = True,
 )
 
 cc_library(
@@ -84,6 +86,7 @@ cc_library(
         "//modules/common/adapters:adapter_gflags",
         "@com_github_gflags_gflags//:gflags",
     ],
+    alwayslink = True,
 )
 
 cc_binary(
