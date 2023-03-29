@@ -885,7 +885,6 @@ bool UsbCam::read_frame(CameraImagePtr raw_image) {
       } else {
         process_image(buffers_[buf.index].start, len, raw_image);
       }
-
       if (-1 == xioctl(fd_, VIDIOC_QBUF, &buf)) {
         AERROR << "VIDIOC_QBUF";
         return false;
@@ -951,14 +950,18 @@ bool UsbCam::process_image(void* src, int len, CameraImagePtr dest) {
   if (pixel_format_ == V4L2_PIX_FMT_YUYV ||
       pixel_format_ == V4L2_PIX_FMT_UYVY) {
     if (pixel_format_ == V4L2_PIX_FMT_UYVY) {
-      unsigned char yuyvbuf[len];
-      unsigned char uyvybuf[len];
+      //unsigned char yuyvbuf[len]; //zabolotny
+      //unsigned char uyvybuf[len];
+      unsigned char (*yuyvbuf) = new unsigned char[len];
+      unsigned char (*uyvybuf) = new unsigned char[len];
       memcpy(yuyvbuf, src, len);
       for (int index = 0; index < len; index = index + 2) {
         uyvybuf[index] = yuyvbuf[index + 1];
         uyvybuf[index + 1] = yuyvbuf[index];
       }
       memcpy(src, uyvybuf, len);
+      delete [] yuyvbuf; //zabolotny
+      delete [] uyvybuf;
     }
     if (config_->output_type() == YUYV) {
       memcpy(dest->image, src, dest->width * dest->height * 2);

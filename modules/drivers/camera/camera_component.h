@@ -46,6 +46,9 @@ class CameraComponent : public Component<> {
   void run();
 
   std::shared_ptr<Writer<Image>> writer_ = nullptr;
+    std::shared_ptr<Writer<Image>> writer_left = nullptr;
+      std::shared_ptr<Writer<Image>> writer_right = nullptr;
+
   std::unique_ptr<UsbCam> camera_device_;
   std::shared_ptr<Config> camera_config_;
   CameraImagePtr raw_image_ = nullptr;

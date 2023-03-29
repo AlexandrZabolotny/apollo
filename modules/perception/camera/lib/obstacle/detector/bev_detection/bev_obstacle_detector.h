@@ -105,8 +105,8 @@ class BEVObstacleDetector : public BaseObstacleDetector {
   int frame_array_size_ = 6;
   int num_output_box_feature_ = 9;
 
-  int image_height_ = 900;
-  int image_width_ = 1600;
+  int image_height_ = 1080; //900
+  int image_width_ = 1920; //1600
   int image_height_resized_ = 450;
   int image_width_resized_ = 800;
   int img_height_crop_ = 320;

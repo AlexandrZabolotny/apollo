@@ -1,10 +1,10 @@
 
-camera_dev: "/dev/video2"
-frame_id: "camera_rear_6mm"
-pixel_format: "yuyv"
+camera_dev: "/dev/video4"
+frame_id: "CAM_BACK"
+pixel_format: "uyvy"
 io_method: IO_METHOD_MMAP
-width: 640
-height: 480
+width: 1920
+height: 1080
 frame_rate: 20
 monochrome: false
 brightness: -1
@@ -20,13 +20,13 @@ auto_white_balance: true
 white_balance: 4000
 bytes_per_pixel: 2
 trigger_internal: 0
-trigger_fps: 20
-channel_name: "/apollo/sensor/camera/rear_6mm/image"
+trigger_fps: 30
+channel_name: "/apollo/sensor/camera/CAM_BACK/image"
 device_wait_ms: 2000
 spin_rate: 200
 output_type: RGB
 
 compress_conf {
-    output_channel: "/apollo/sensor/camera/rear_6mm/image/compressed"
+    output_channel: "/apollo/sensor/camera/CAM_BACK/image/compressed"
     image_pool_size: 100
 }

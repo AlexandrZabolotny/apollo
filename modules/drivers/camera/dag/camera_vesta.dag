@@ -1,0 +1,38 @@
+# Define all coms in DAG streaming.
+module_config {
+    module_library : "/apollo/bazel-bin/modules/drivers/camera/libcamera_component.so"
+
+    components {
+      class_name : "CameraComponent"
+      config {
+        name : "CAM_FRONT"
+        config_file_path : "/apollo/modules/drivers/camera/conf/camera_CAM_FRONT.pb.txt"
+      }
+    }
+
+    components {
+      class_name : "CameraComponent"
+      config {
+        name : "CAM_FRONT_LEFT"
+        config_file_path : "/apollo/modules/drivers/camera/conf/camera_CAM_FRONT_LEFT.pb.txt"
+      }
+    }
+
+    components {
+      class_name : "CameraComponent"
+      config {
+        name : "CAM_FRONT_RIGHT"
+        config_file_path : "/apollo/modules/drivers/camera/conf/camera_CAM_FRONT_RIGHT.pb.txt"
+      }
+    }
+
+    components {
+      class_name : "CameraComponent"
+      config {
+        name : "CAM_BACK"
+        config_file_path : "/apollo/modules/drivers/camera/conf/camera_CAM_BACK.pb.txt"
+      }
+    }
+
+}
+

@@ -77,6 +77,9 @@ bool CameraComponent::Init() {
   }
 
   writer_ = node_->CreateWriter<Image>(camera_config_->channel_name());
+    writer_left = node_->CreateWriter<Image>("/apollo/sensor/camera/CAM_BACK_LEFT/image");
+      writer_right = node_->CreateWriter<Image>("/apollo/sensor/camera/CAM_BACK_RIGHT/image");
+  
   async_result_ = cyber::Async(&CameraComponent::run, this);
   return true;
 }
@@ -102,11 +105,22 @@ void CameraComponent::run() {
     auto pb_image = pb_image_buffer_.at(index_++);
     pb_image->mutable_header()->set_timestamp_sec(
         cyber::Time::Now().ToSecond());
+    pb_image->mutable_header()->set_frame_id(camera_config_->frame_id()); //zabolotny
     pb_image->set_measurement_time(image_time.ToSecond());
     pb_image->set_data(raw_image_->image, raw_image_->image_size);
     writer_->Write(pb_image);
 
-    cyber::SleepFor(std::chrono::microseconds(spin_rate_));
+    //zabolotny
+    if (camera_config_->frame_id() == "CAM_FRONT_LEFT"){
+      pb_image->mutable_header()->set_frame_id("CAM_BACK_LEFT");
+      writer_left->Write(pb_image);
+    } 
+    else if (camera_config_->frame_id() == "CAM_FRONT_RIGHT"){
+      pb_image->mutable_header()->set_frame_id("CAM_BACK_RIGHT");
+      writer_right->Write(pb_image);
+    }
+
+    //cyber::SleepFor(std::chrono::microseconds(spin_rate_));
   }
 }
 

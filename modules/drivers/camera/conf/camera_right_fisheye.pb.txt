@@ -1,10 +1,10 @@
 
-camera_dev: "/dev/camera/right_fisheye"
+camera_dev: "/dev/video0"
 frame_id: "camera_right_fisheye"
 pixel_format: "yuyv"
 io_method: IO_METHOD_MMAP
-width: 1920
-height: 1080
+width: 640
+height: 480
 frame_rate: 20
 monochrome: false
 brightness: -1
