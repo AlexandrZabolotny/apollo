@@ -38,17 +38,17 @@ flags.DEFINE_string('from_record', None, 'The source record file that needs to b
 flags.DEFINE_string('to_record', None, 'The restored record file.')
 
 # The compressed channels that have videos we need to decode
-IMAGE_FRONT_6MM_CHANNEL = '/apollo/sensor/camera/front_6mm/image/compressed'
-IMAGE_FRONT_12MM_CHANNEL = '/apollo/sensor/camera/front_12mm/image/compressed'
-IMAGE_REAR_6MM_CHANNEL = '/apollo/sensor/camera/rear_6mm/image/compressed'
-IMAGE_LEFT_FISHEYE_CHANNEL = '/apollo/sensor/camera/left_fisheye/image/compressed'
-IMAGE_RIGHT_FISHEYE_CHANNEL = '/apollo/sensor/camera/right_fisheye/image/compressed'
+IMAGE_FRONT_6MM_CHANNEL = '/apollo/sensor/camera/CAM_FRONT/image/compressed'
+IMAGE_FRONT_12MM_CHANNEL = '/apollo/sensor/camera/CAM_FRONT_LEFT/image/compressed'
+IMAGE_REAR_6MM_CHANNEL = '/apollo/sensor/camera/CAM_FRONT_RIGHT/image/compressed'
+IMAGE_LEFT_FISHEYE_CHANNEL = '/apollo/sensor/camera/CAM_BACK/image/compressed'
+IMAGE_RIGHT_FISHEYE_CHANNEL = '/apollo/sensor/camera/CAM_BACK_LEFT/image/compressed'
 
-VIDEO_FRONT_6MM_CHANNEL = '/apollo/sensor/camera/front_6mm/video/compressed'
-VIDEO_FRONT_12MM_CHANNEL = '/apollo/sensor/camera/front_12mm/video/compressed'
-VIDEO_REAR_6MM_CHANNEL = '/apollo/sensor/camera/rear_6mm/video/compressed'
-VIDEO_LEFT_FISHEYE_CHANNEL = '/apollo/sensor/camera/left_fisheye/video/compressed'
-VIDEO_RIGHT_FISHEYE_CHANNEL = '/apollo/sensor/camera/right_fisheye/video/compressed'
+VIDEO_FRONT_6MM_CHANNEL = '/apollo/sensor/camera/CAM_FRONT/video/compressed'
+VIDEO_FRONT_12MM_CHANNEL = '/apollo/sensor/camera/CAM_FRONT_LEFT/video/compressed'
+VIDEO_REAR_6MM_CHANNEL = '/apollo/sensor/camera/CAM_FRONT_RIGHT/video/compressed'
+VIDEO_LEFT_FISHEYE_CHANNEL = '/apollo/sensor/camera/CAM_BACK/video/compressed'
+VIDEO_RIGHT_FISHEYE_CHANNEL = '/apollo/sensor/camera/CAM_BACK_LEFT/video/compressed'
 
 VIDEO_CHANNELS = [
     IMAGE_FRONT_6MM_CHANNEL,

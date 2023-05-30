@@ -224,8 +224,8 @@ Status GriddedPathTimeGraph::InitSpeedLimitLookUp() {
 }
 
 Status GriddedPathTimeGraph::CalculateTotalCost() {
-  // col and row are for STGraph
-  // t corresponding to col
+  // col and row are for STGraph //cost_table_[t][s]
+  // t corresponding to col 
   // s corresponding to row
   size_t next_highest_row = 0;
   size_t next_lowest_row = 0;

@@ -92,6 +92,7 @@ py_binary(
         "//cyber/python/cyber_py3:cyber_time",
         "//modules/common_msgs/localization_msgs:gps_py_pb2",
         "//modules/common_msgs/localization_msgs:localization_py_pb2",
+        "//modules/common_msgs/transform_msgs:transform_py_pb2",
     ],
 )
 
@@ -105,6 +106,7 @@ py_library(
         "//modules/common_msgs/sensor_msgs:sensor_image_py_pb2",
         "//modules/common_msgs/localization_msgs:gps_py_pb2",
         "//modules/common_msgs/localization_msgs:localization_py_pb2",
+        "//modules/common_msgs/transform_msgs:transform_py_pb2",
     ],
 )
 

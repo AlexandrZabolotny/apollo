@@ -48,6 +48,12 @@ class GriddedPathTimeGraph {
                        const common::TrajectoryPoint& init_point);
 
   common::Status Search(SpeedData* const speed_data);
+  //zabolotny
+  std::vector<std::vector<StGraphPoint>> get_total_cost() { return cost_table_; }
+  
+  double get_unit_t() { return unit_t_; }
+
+  double get_unit_s() { return total_length_s_/dimension_s_; }
 
  private:
   common::Status InitCostTable();

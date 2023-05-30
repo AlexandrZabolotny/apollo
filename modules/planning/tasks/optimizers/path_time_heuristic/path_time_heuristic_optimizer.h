@@ -21,6 +21,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "modules/common_msgs/planning_msgs/planning_internal.pb.h"
 #include "modules/planning/proto/task_config.pb.h"
@@ -43,12 +44,16 @@ class PathTimeHeuristicOptimizer : public SpeedOptimizer {
                          const common::TrajectoryPoint& init_point,
                          SpeedData* const speed_data) override;
 
-  bool SearchPathTimeGraph(SpeedData* speed_data) const;
+  bool SearchPathTimeGraph(SpeedData* speed_data) ;
 
  private:
   common::TrajectoryPoint init_point_;
   SLBoundary adc_sl_boundary_;
   SpeedHeuristicOptimizerConfig speed_heuristic_optimizer_config_;
+   //zabolotny
+  std::vector<std::vector<double>> cost_table;
+  double step_t = 0.0;
+  double step_s = 0.0;
 };
 
 }  // namespace planning

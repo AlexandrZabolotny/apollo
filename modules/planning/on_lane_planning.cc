@@ -60,6 +60,8 @@ using apollo::common::math::Vec2d;
 using apollo::cyber::Clock;
 using apollo::dreamview::Chart;
 using apollo::hdmap::HDMapUtil;
+using apollo::planning_internal::PlanningData; //zabolotny
+using apollo::planning_internal::ObstacleDebug; //zabolotny
 using apollo::planning_internal::SLFrameDebug;
 using apollo::planning_internal::SpeedPlan;
 using apollo::planning_internal::STGraphDebug;
@@ -711,12 +713,12 @@ void PopulateChartOptions(double x_min, double x_max, std::string x_label,
 }
 
 void AddSTGraph(const STGraphDebug& st_graph, Chart* chart) {
-  if (st_graph.name() == "DP_ST_SPEED_OPTIMIZER") {
+  if (st_graph.name() == "SPEED_HEURISTIC_OPTIMIZER") {
     chart->set_title("Speed Heuristic");
   } else {
     chart->set_title("Planning S-T Graph");
   }
-  PopulateChartOptions(-2.0, 10.0, "t (second)", -10.0, 220.0, "s (meter)",
+  PopulateChartOptions(-2.0, 10.0, "t (second)", -5.0, 50.0, "s (meter)",
                        false, chart);
 
   for (const auto& boundary : st_graph.boundary()) {
@@ -758,6 +760,83 @@ void AddSTGraph(const STGraphDebug& st_graph, Chart* chart) {
   }
 }
 
+//zabolotny
+void AddSpeedCostGraph(const STGraphDebug& st_graph, Chart* chart) {
+  chart->set_title("Speed Cost Grapth");
+  PopulateChartOptions(-2.0, 10.0, "t (second)", -5.0, 140.0, "s (meter)",
+                       false, chart);
+  if (st_graph.name() == "SPEED_HEURISTIC_OPTIMIZER") {
+    for (const auto& point : st_graph.graph_cost()) {
+      auto* cost_profile = chart->add_polygon();
+      auto* properties = cost_profile->mutable_properties();
+
+     (*properties)["borderWidth"] = "2";
+     (*properties)["pointRadius"] = "0";
+     (*properties)["lineTension"] = "0";
+     (*properties)["cubicInterpolationMode"] = "monotone";
+     (*properties)["showLine"] = "true";
+     (*properties)["showText"] = "false";
+     (*properties)["fill"] = "false";
+
+      if (point.totalcost() == std::numeric_limits<double>::infinity()) {
+        (*properties)["color"] = "\"rgba(255, 0, 0, 0.5)\"";
+      }
+      else if (point.totalcost() > 1024000){
+        (*properties)["color"] = "\"rgba(255, 100, 0, 0.5)\"";
+      } else {
+        int total_cost = -255*(point.totalcost()/1024000) + 255;
+        std::string green = std::to_string(total_cost);
+        std::string red = std::to_string(255 - total_cost);
+
+        std::string col = "\"rgba(" + red + ", " + green + ", 0, 0.5)\"";
+        (*properties)["color"] = col;
+      }
+
+      cost_profile->set_label(std::to_string(point.t()) + "_" + std::to_string(point.s()));
+      for (int i = 0; i < 5; i++) {
+        auto* point_debug = cost_profile->add_point();
+        point_debug->set_x(point.t() * point.unit_t() + i*(point.unit_t()/4));
+        point_debug->set_y(point.s() * point.unit_s() + i*0.05);
+      }
+    }
+  }
+}
+
+//zabolotny
+void AddObstacleFrame(const PlanningData& Data, Chart* chart) {
+  chart->set_title("field for research with Evgrafov VV");
+  PopulateChartOptions(0.0, 80.0, "s (meter)", -5.0, 5.0, "l (meter)", false,
+                       chart);
+  for (const auto& boundary : Data.obstacle()) {
+
+  auto* boundary_chart = chart->add_polygon();
+  auto* properties = boundary_chart->mutable_properties();
+  (*properties)["borderWidth"] = "2";
+  (*properties)["pointRadius"] = "0";
+  (*properties)["lineTension"] = "0";
+  (*properties)["cubicInterpolationMode"] = "monotone";
+  (*properties)["showLine"] = "true";
+  (*properties)["showText"] = "true";
+  (*properties)["fill"] = "false";
+  (*properties)["color"] = "\"rgba(255, 0, 0, 0.8)\"";
+
+  boundary_chart->set_label(boundary.id());
+    auto* point_debug1 = boundary_chart->add_point();
+  point_debug1->set_x(boundary.sl_boundary().end_s());
+  point_debug1->set_y(boundary.sl_boundary().end_l());
+    auto* point_debug2 = boundary_chart->add_point();
+  point_debug2->set_x(boundary.sl_boundary().end_s());
+  point_debug2->set_y(boundary.sl_boundary().start_l());
+    auto* point_debug3 = boundary_chart->add_point();
+  point_debug3->set_x(boundary.sl_boundary().start_s());
+  point_debug3->set_y(boundary.sl_boundary().start_l());
+    auto* point_debug4 = boundary_chart->add_point();
+  point_debug4->set_x(boundary.sl_boundary().start_s());
+  point_debug4->set_y(boundary.sl_boundary().end_l());
+}
+
+}
+
 void AddSLFrame(const SLFrameDebug& sl_frame, Chart* chart) {
   chart->set_title(sl_frame.name());
   PopulateChartOptions(0.0, 80.0, "s (meter)", -8.0, 8.0, "l (meter)", false,
@@ -767,7 +846,7 @@ void AddSLFrame(const SLFrameDebug& sl_frame, Chart* chart) {
   for (const auto& sl_point : sl_frame.sl_path()) {
     auto* point_debug = sl_line->add_point();
     point_debug->set_x(sl_point.s());
-    point_debug->set_x(sl_point.l());
+    point_debug->set_y(sl_point.l());
   }
 }
 
@@ -816,12 +895,18 @@ void OnLanePlanning::ExportOnLaneChart(
     planning_internal::Debug* debug_chart) {
   const auto& src_data = debug_info.planning_data();
   auto* dst_data = debug_chart->mutable_planning_data();
-  for (const auto& st_graph : src_data.st_graph()) {
-    AddSTGraph(st_graph, dst_data->add_chart());
-  }
   for (const auto& sl_frame : src_data.sl_frame()) {
     AddSLFrame(sl_frame, dst_data->add_chart());
   }
+  for (const auto& st_graph : src_data.st_graph()) {
+    AddSTGraph(st_graph, dst_data->add_chart());
+  }
+  for (const auto& st_graph : src_data.st_graph()) {
+    if (st_graph.name() == "SPEED_HEURISTIC_OPTIMIZER") {
+      AddSpeedCostGraph(st_graph, dst_data->add_chart());
+    }
+  }
+  AddObstacleFrame(src_data, dst_data->add_chart());
   AddSpeedPlan(src_data.speed_plan(), dst_data->add_chart());
 }
 

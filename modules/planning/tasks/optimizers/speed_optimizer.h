@@ -24,6 +24,7 @@
 #include "modules/planning/common/speed/speed_data.h"
 #include "modules/planning/common/st_graph_data.h"
 #include "modules/planning/tasks/task.h"
+#include <vector>
 
 namespace apollo {
 namespace planning {
@@ -44,6 +45,10 @@ class SpeedOptimizer : public Task {
   void RecordDebugInfo(const SpeedData& speed_data);
   void RecordDebugInfo(const SpeedData& speed_data,
                        planning_internal::STGraphDebug* st_graph_debug);
+  void RecordDebugInfo(const SpeedData& speed_data,
+                       planning_internal::STGraphDebug* st_graph_debug,
+                       const std::vector< std::vector<double>>& cost,
+                       double dt, double ds);
 };
 
 }  // namespace planning

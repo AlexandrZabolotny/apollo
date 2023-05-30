@@ -62,5 +62,31 @@ void SpeedOptimizer::RecordDebugInfo(const SpeedData& speed_data,
       {speed_data.begin(), speed_data.end()});
 }
 
+//zabolotny
+void SpeedOptimizer::RecordDebugInfo(const SpeedData& speed_data,
+                                     STGraphDebug* st_graph_debug,
+                                     const std::vector< std::vector <double>>& cost,
+                                     double dt, double ds) {
+  if (!FLAGS_enable_record_debug || !st_graph_debug) {
+    ADEBUG << "Skip record debug info";
+    return;
+  }
+  st_graph_debug->set_name(Name());
+  st_graph_debug->mutable_speed_profile()->CopyFrom(
+      {speed_data.begin(), speed_data.end()});
+  st_graph_debug->clear_graph_cost();
+  for (size_t i = 0; i < cost.size(); i++){
+    for (size_t j = 0; j < cost[i].size(); j++) {
+      auto graph = st_graph_debug->add_graph_cost();
+      graph->set_unit_t(dt);
+      graph->set_unit_s(ds);
+      graph->set_t(i);
+      graph->set_s(j);
+      graph->set_totalcost(cost[i][j]);
+    }
+  }
+}
+
+
 }  // namespace planning
 }  // namespace apollo

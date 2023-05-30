@@ -39,7 +39,7 @@ PathTimeHeuristicOptimizer::PathTimeHeuristicOptimizer(const TaskConfig& config)
 }
 
 bool PathTimeHeuristicOptimizer::SearchPathTimeGraph(
-    SpeedData* speed_data) const {
+    SpeedData* speed_data)  {
   const auto& dp_st_speed_optimizer_config =
       reference_line_info_->IsChangeLanePath()
           ? speed_heuristic_optimizer_config_.lane_change_speed_config()
@@ -52,6 +52,16 @@ bool PathTimeHeuristicOptimizer::SearchPathTimeGraph(
   if (!st_graph.Search(speed_data).ok()) {
     AERROR << "failed to search graph with dynamic programming.";
     return false;
+  }
+  cost_table.resize(0);                      //zabolotny
+  const auto gr = st_graph.get_total_cost();
+  step_t = st_graph.get_unit_t();
+  step_s = st_graph.get_unit_s();
+  for (int i = 0; i < static_cast<int>(gr.size()); i++) {
+    cost_table.push_back(std::vector<double>());
+    for (int j = 0; j < static_cast<int>(gr[i].size()); j++) {
+      cost_table[i].push_back(gr[i][j].total_cost());
+    }
   }
   return true;
 }
@@ -77,7 +87,8 @@ Status PathTimeHeuristicOptimizer::Process(
   }
   RecordDebugInfo(
       *speed_data,
-      reference_line_info_->mutable_st_graph_data()->mutable_st_graph_debug());
+      reference_line_info_->mutable_st_graph_data()->mutable_st_graph_debug(),
+      cost_table, step_t, step_s);
   return Status::OK();
 }
 
