@@ -105,17 +105,19 @@ Status LearningModelInferenceTask::Process(Frame* frame) {
   trajectory_evaluator.EvaluateADCTrajectory(start_point_timestamp_sec,
                                              config.trajectory_delta_t(),
                                              &learning_data_frame);
-
+  // add by zabolotny
+  // for fixing bug over stack memory
+  const double start_point_timestamp_sec_obstacle =
+      learning_data_frame.message_timestamp_sec();
   // evaluate obstacle trajectory
-  trajectory_evaluator.EvaluateObstacleTrajectory(start_point_timestamp_sec,
+  trajectory_evaluator.EvaluateObstacleTrajectory(start_point_timestamp_sec_obstacle,
                                                   config.trajectory_delta_t(),
                                                   &learning_data_frame);
-
   // evaluate obstacle prediction trajectory
   trajectory_evaluator.EvaluateObstaclePredictionTrajectory(
-      start_point_timestamp_sec, config.trajectory_delta_t(),
-      &learning_data_frame);
-
+                                                  start_point_timestamp_sec_obstacle,
+                                                  config.trajectory_delta_t(),
+                                                  &learning_data_frame);
   if (!trajectory_imitation_inference_->LoadModel()) {
     const std::string msg = absl::StrCat(
         "TrajectoryImitationInference LoadModel() failed. frame_num[",

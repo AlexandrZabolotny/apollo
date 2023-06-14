@@ -269,7 +269,6 @@ void TrajectoryEvaluator::EvaluateObstacleTrajectory(
       trajectory.push_back(std::make_pair(perception_obstacle.timestamp_sec(),
                                           trajectory_point));
     }
-
     std::vector<TrajectoryPointFeature> evaluated_trajectory;
     if (trajectory.size() == 1 ||
         fabs(trajectory.front().first - start_point_timestamp_sec)
@@ -303,7 +302,6 @@ void TrajectoryEvaluator::EvaluateObstacleTrajectory(
              << "] evaluated_trajectory_size[" << evaluated_trajectory.size()
              << "]";
     }
-
     // update learning_data
     learning_data_frame->mutable_obstacle(i)
         ->mutable_obstacle_trajectory()
