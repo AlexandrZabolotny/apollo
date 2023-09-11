@@ -142,7 +142,6 @@ void TrajectoryEvaluator::EvaluateADCTrajectory(
          << "] orig adc_trajectory[" << trajectory.size()
          << "] evaluated_trajectory_size[" << evaluated_trajectory.size()
          << "]";
-
   for (const auto& tp : evaluated_trajectory) {
     if (tp.trajectory_point().relative_time() <= 0.0 &&
         tp.trajectory_point().relative_time() >=

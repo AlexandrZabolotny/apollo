@@ -132,7 +132,6 @@ Status LearningModelInferenceTask::Process(Frame* frame) {
     AERROR << msg;
     return Status(ErrorCode::PLANNING_ERROR, msg);
   }
-
   const int adc_future_trajectory_point_size =
       learning_data_frame.output().adc_future_trajectory_point_size();
   ADEBUG << "   adc_future_trajectory_point_size["

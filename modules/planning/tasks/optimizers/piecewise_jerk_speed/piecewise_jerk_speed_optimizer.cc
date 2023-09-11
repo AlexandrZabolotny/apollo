@@ -89,8 +89,44 @@ Status PiecewiseJerkSpeedOptimizer::Process(const PathData& path_data,
   piecewise_jerk_problem.set_dddx_bound(FLAGS_longitudinal_jerk_lower_bound,
                                         FLAGS_longitudinal_jerk_upper_bound);
 
-  piecewise_jerk_problem.set_dx_ref(config.ref_v_weight(),
-                                    reference_line_info_->GetCruiseSpeed());
+  // zabolotny
+  // change for add offset speed by hybrid method
+ 
+  if (reference_line_info_->path_data().is_valid_path_reference() && 
+      FLAGS_use_learn_speed_for_hybrid ) {
+    std::vector<double> speed_reference(num_of_knots, 
+                                      reference_line_info_->GetCruiseSpeed());
+    const auto& reference_trajectory = reference_line_info_->trajectory();
+    size_t trajectory_size = reference_trajectory.size();
+    int j = 0;
+    std::pair<double, double> point_1 = {reference_trajectory.at(0).relative_time(),
+                                        reference_trajectory.at(0).v()};
+    std::pair<double, double> point_2 = {reference_trajectory.at(0).relative_time(),
+                                        reference_trajectory.at(0).v()};
+    for (size_t i = 1; i < trajectory_size; i++) {
+      point_2 = {reference_trajectory.at(i).relative_time(),
+                reference_trajectory.at(i).v()};
+      if (point_2.first >= j * delta_t) {
+        for ( ; j < num_of_knots; j++) {
+          double dt = point_2.first - point_1.first;
+          double dv = point_2.second - point_1.second;
+          double v = point_1.second + (dv / dt) * (j * delta_t - point_1.first);
+          speed_reference[j] = v >= 0.0 ? v : 0.0;
+          if (j * delta_t >= point_2.first) {
+            point_1 = point_2;
+            j++;
+            break;
+          }
+        } 
+      }
+    }
+    piecewise_jerk_problem.set_dx_ref(config.ref_v_weight(),
+                                    speed_reference);
+  } else {
+    piecewise_jerk_problem.set_dx_ref(config.ref_v_weight(),
+                                  reference_line_info_->GetCruiseSpeed());
+  }
+  // // end  
 
   // Update STBoundary
   std::vector<std::pair<double, double>> s_bounds;

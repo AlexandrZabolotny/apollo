@@ -281,3 +281,7 @@ DECLARE_int32(min_past_history_points_len);
 // hybrid model
 DECLARE_bool(skip_path_reference_in_side_pass);
 DECLARE_bool(skip_path_reference_in_change_lane);
+
+//zabolotny
+DECLARE_bool(vizualizate_learning_img);
+DECLARE_bool(use_learn_speed_for_hybrid);

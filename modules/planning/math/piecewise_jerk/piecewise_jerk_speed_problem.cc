@@ -36,6 +36,13 @@ void PiecewiseJerkSpeedProblem::set_dx_ref(const double weight_dx_ref,
   has_dx_ref_ = true;
 }
 
+void PiecewiseJerkSpeedProblem::set_dx_ref(const double weight_dx_ref,
+                                           const std::vector<double> dx_ref) {
+  weight_dx_ref_ = weight_dx_ref;
+  dx_ref_vec_ = std::move(dx_ref);
+  has_dx_ref_vec_ = true;
+}
+
 void PiecewiseJerkSpeedProblem::set_penalty_dx(std::vector<double> penalty_dx) {
   CHECK_EQ(penalty_dx.size(), num_of_knots_);
   penalty_dx_ = std::move(penalty_dx);
@@ -128,6 +135,9 @@ void PiecewiseJerkSpeedProblem::CalculateOffset(std::vector<c_float>* q) {
     }
     if (has_dx_ref_) {
       q->at(n + i) += -2.0 * weight_dx_ref_ * dx_ref_ / scale_factor_[1];
+    }
+    else if (has_dx_ref_vec_) {
+      q->at(n + i) += -2.0 * weight_dx_ref_ * dx_ref_vec_[i] / scale_factor_[1];
     }
   }
 

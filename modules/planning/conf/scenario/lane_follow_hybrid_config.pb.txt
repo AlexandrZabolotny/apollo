@@ -18,16 +18,16 @@ stage_config: {
   task_type: SPEED_HEURISTIC_OPTIMIZER
   task_type: SPEED_DECIDER
   task_type: SPEED_BOUNDS_FINAL_DECIDER
-  # task_type: PIECEWISE_JERK_SPEED_OPTIMIZER
-  task_type: PIECEWISE_JERK_NONLINEAR_SPEED_OPTIMIZER
+  task_type: PIECEWISE_JERK_SPEED_OPTIMIZER
+  # task_type: PIECEWISE_JERK_NONLINEAR_SPEED_OPTIMIZER
   task_type: RSS_DECIDER
 
   task_config: {
     task_type: LEARNING_MODEL_INFERENCE_TASK
     learning_model_inference_task_config {
-      model_type: CNN
-      cpu_model_file: "/apollo/modules/planning/data/model/cpu_test_model_cnn.pt"
-      gpu_model_file: "/apollo/modules/planning/data/model/gpu_test_model_cnn.pt"
+      model_type: CNN_LSTM
+      cpu_model_file: "/apollo/modules/planning/data/model/cpu_test_model_cnn_lstm.pt"
+      gpu_model_file: "/apollo/modules/planning/data/model/gpu_test_model_cnn_lstm.pt"
       use_cuda: true
       allow_empty_learning_based_data: true
       allow_empty_output_trajectory: true
@@ -68,7 +68,7 @@ stage_config: {
     task_type: PIECEWISE_JERK_PATH_OPTIMIZER
     piecewise_jerk_path_optimizer_config
     {
-      path_reference_l_weight: 100.0
+      path_reference_l_weight: 5000.0
     }
   }
   task_config: {
@@ -94,6 +94,13 @@ stage_config: {
   }
   task_config: {
     task_type: PIECEWISE_JERK_SPEED_OPTIMIZER
+    piecewise_jerk_speed_optimizer_config {
+      acc_weight: 1.0
+      jerk_weight: 3.0
+      kappa_penalty_weight: 2000.0
+      ref_s_weight: 10.0
+      ref_v_weight: 10.0
+    }
   }
   task_config: {
     task_type: RSS_DECIDER

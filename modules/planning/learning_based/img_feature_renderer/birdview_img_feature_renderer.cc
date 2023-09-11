@@ -161,6 +161,28 @@ bool BirdviewImgFeatureRenderer::RenderMultiChannelEnv(
                                      obs_future,       road_map,     routing,
                                      speed_limit,      traffic_light};
   cv::merge(merge_imgs, *img_feature);
+  std::unordered_map<int, std::string> title_draw = { {1, "ego_cur_box_img_"}, {2, "ego_past"},     {3, "obs_past"},
+                                     {4, "obs_future"},       {5, "road_map"},     {6, "routing"},
+                                     {7, "speed_limit"},      {8, "traffic_light"} };
+  // zabolotny FLAGS_vizualizate_learning_img
+  if (FLAGS_vizualizate_learning_img) {
+    cv::Mat full_draw = cv::Mat(config_.height(), config_.width(), CV_8UC3, cv::Scalar(0,0,0));
+    int i = 0;
+    for (auto img : merge_imgs) {
+      i++;
+      if (img.channels() == 1) {
+        cv::imshow(title_draw[i], img);
+        cv::Mat temp;
+        cv::cvtColor(img, temp, cv::COLOR_GRAY2BGR);
+        cv::bitwise_or( temp, full_draw, full_draw);
+      } else if (img.channels() == 3) {
+        cv::imshow(title_draw[i], img);
+        cv::bitwise_or( img, full_draw, full_draw);
+      }
+    }
+    cv::imshow("Full scenery", full_draw);
+    cv::waitKey(100);
+  }
   return true;
 }
 

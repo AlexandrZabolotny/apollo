@@ -54,6 +54,8 @@ class PiecewiseJerkSpeedProblem : public PiecewiseJerkProblem {
 
   void set_dx_ref(const double weight_dx_ref, const double dx_ref);
 
+  void set_dx_ref(const double weight_dx_ref, const std::vector<double> dx_ref);
+
   void set_penalty_dx(std::vector<double> penalty_dx);
 
  protected:
@@ -67,8 +69,10 @@ class PiecewiseJerkSpeedProblem : public PiecewiseJerkProblem {
   OSQPSettings* SolverDefaultSettings() override;
 
   bool has_dx_ref_ = false;
+  bool has_dx_ref_vec_ = false;
   double weight_dx_ref_ = 0.0;
   double dx_ref_ = 0.0;
+  std::vector<double> dx_ref_vec_;
 
   std::vector<double> penalty_dx_;
 };

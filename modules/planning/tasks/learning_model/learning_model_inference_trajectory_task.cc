@@ -48,7 +48,6 @@ Status LearningModelInferenceTrajectoryTask::Execute(
 
 Status LearningModelInferenceTrajectoryTask::Process(
     Frame *frame, ReferenceLineInfo *reference_line_info) {
-  AERROR << "zabolotny_222222";
   CHECK_NOTNULL(frame);
   CHECK_NOTNULL(reference_line_info);
 

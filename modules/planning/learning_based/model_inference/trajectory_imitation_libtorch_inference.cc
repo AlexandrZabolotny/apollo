@@ -59,7 +59,7 @@ bool TrajectoryImitationLibtorchInference::LoadCNNLSTMModel() {
                                   std::move(current_v.to(device_))}));
   try {
     auto torch_output_tensor =
-        model_.forward(torch_inputs).toTensor().to(torch::kCPU);
+        model_.forward(torch_inputs).toTensor().to(torch::kCUDA); //zabolotny
   } catch (const c10::Error& e) {
     AERROR << "Fail to do initial inference on HISTORY_UNCONDITIONED_CNN_LSTM "
               "Model";
@@ -69,37 +69,40 @@ bool TrajectoryImitationLibtorchInference::LoadCNNLSTMModel() {
 }
 
 bool TrajectoryImitationLibtorchInference::LoadModel() {
-  if (config_.use_cuda() && torch::cuda::is_available()) {
-    ADEBUG << "CUDA is available";
-    device_ = torch::Device(torch::kCUDA);
-    try {
-      model_ = torch::jit::load(config_.gpu_model_file(), device_);
-    } catch (const c10::Error& e) {
-      AERROR << "Failed to load model on to device";
-      return false;
+  if (first_load) { //zabolotny
+    if (config_.use_cuda() && torch::cuda::is_available()) {
+      ADEBUG << "CUDA is available";
+      device_ = torch::Device(torch::kCUDA);
+      try {
+        model_ = torch::jit::load(config_.gpu_model_file(), device_);
+      } catch (const c10::Error& e) {
+        AERROR << "Failed to load model on to device";
+        return false;
+      }
+    } else {
+      model_ = torch::jit::load(config_.cpu_model_file(), device_);
     }
-  } else {
-    model_ = torch::jit::load(config_.cpu_model_file(), device_);
-  }
 
-  torch::set_num_threads(1);
-  switch (config_.model_type()) {
-    case LearningModelInferenceTaskConfig::CNN: {
-      if (!LoadCNNModel()) {
-        return false;
+    torch::set_num_threads(1);
+    switch (config_.model_type()) {
+      case LearningModelInferenceTaskConfig::CNN: {
+        if (!LoadCNNModel()) {
+          return false;
+        }
+        break;
       }
-      break;
-    }
-    case LearningModelInferenceTaskConfig::CNN_LSTM: {
-      if (!LoadCNNLSTMModel()) {
-        return false;
+      case LearningModelInferenceTaskConfig::CNN_LSTM: {
+        if (!LoadCNNLSTMModel()) {
+          return false;
+        }
+        break;
       }
-      break;
+      default: {
+        AERROR << "Configured model type not defined and implemented";
+        break;
+      }
     }
-    default: {
-      AERROR << "Configured model type not defined and implemented";
-      break;
-    }
+    first_load = false;
   }
   return true;
 }
@@ -122,6 +125,9 @@ void TrajectoryImitationLibtorchInference::output_postprocessing(
   learning_data_frame->mutable_output()->clear_adc_future_trajectory_point();
   const double delta_t = config_.trajectory_delta_t();
   auto torch_output = torch_output_tensor.accessor<float, 3>();
+  // AERROR << "torch_output_tensor.size(1) = " << torch_output_tensor.size(1); //zabolotny
+  // AERROR << "torch_output_tensor.size(0) = " << torch_output_tensor.size(0);
+  // AERROR << "torch_output_tensor.size(2) = " << torch_output_tensor.size(2);
   for (int i = 0; i < torch_output_tensor.size(1); ++i) {
     const double dx = static_cast<double>(torch_output[0][i][0]);
     const double dy = static_cast<double>(torch_output[0][i][1]);

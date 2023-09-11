@@ -91,6 +91,7 @@ class TrajectoryImitationLibtorchInference : public ModelInference {
 
   torch::jit::script::Module model_;
   torch::Device device_;
+  bool first_load = true; //zabolotny for boost time of loop
 };
 
 }  // namespace planning

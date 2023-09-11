@@ -30,6 +30,9 @@
 #include "modules/planning/proto/learning_data.pb.h"
 #include "modules/planning/proto/planning_semantic_map_config.pb.h"
 #include "opencv2/opencv.hpp"
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "modules/planning/common/planning_gflags.h"
 
 namespace apollo {
 namespace planning {

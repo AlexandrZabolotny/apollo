@@ -117,7 +117,13 @@ Status PathReferenceDecider::Process(Frame *frame,
       injector_->learning_based_data()
           ->learning_data_adc_future_trajectory_points();
   ADEBUG << "There are " << learning_model_trajectory.size() << " path points.";
-
+  // for (size_t i = 0; i < learning_model_trajectory.size(); i++) { //zabolotny
+  //  AERROR << learning_model_trajectory[i].relative_time();
+  //  int x = (int)learning_model_trajectory[i].path_point().x();
+  //  int y = (int)learning_model_trajectory[i].path_point().y();
+  //  AERROR << "x= " << x
+  //         << "y= " << y;
+  // }
   // get regular path bound
   size_t regular_path_bound_idx = GetRegularPathBound(path_boundaries);
   if (regular_path_bound_idx == path_boundaries.size()) {
@@ -188,6 +194,9 @@ Status PathReferenceDecider::Process(Frame *frame,
     return Status::OK();
   }
   ConvertTrajectoryToPath(stitched_learning_model_trajectory, &path_reference);
+  //add by zabolotny for speed offset
+  DiscretizedTrajectory cut_trajectory(learning_model_trajectory);
+  reference_line_info->SetTrajectory(std::move(cut_trajectory));
   const std::string path_reference_name = "path_reference";
   RecordDebugInfo(path_reference, path_reference_name, reference_line_info);
 
@@ -240,9 +249,9 @@ Status PathReferenceDecider::Process(Frame *frame,
   reference_line_info->mutable_path_data()->set_path_reference(
       std::move(evaluated_path_reference));
   // uncomment this for debug
-  //   const std::string evaluation_path_name = "evaluated_path_reference";
-  //   RecordDebugInfo(evaluated_path_reference, evaluation_path_name,
-  //                   reference_line_info);
+     const std::string evaluation_path_name = "evaluated_path_reference";
+     RecordDebugInfo(evaluated_path_reference, evaluation_path_name,
+                     reference_line_info);
 
   ++valid_path_reference_counter_;
   ADEBUG << "valid_path_reference_counter[" << valid_path_reference_counter_
@@ -450,6 +459,7 @@ void PathReferenceDecider::EvaluatePathReference(
   for (idx = 0; idx < path_bound.boundary().size(); ++idx) {
     // relative s
     double cur_s = static_cast<double>(idx) * delta_s;
+    //AERROR << idx << " cur_s= " << cur_s << "; " << "sum = " << path_reference_end_s; //zabolotny
     if (cur_s > path_reference_end_s) {
       break;
     }

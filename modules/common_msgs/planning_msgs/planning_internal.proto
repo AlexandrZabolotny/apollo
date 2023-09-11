@@ -38,6 +38,13 @@ message StGraphBoundaryDebug {
   repeated apollo.common.SpeedPoint point = 2;
   optional StBoundaryType type = 3;
 }
+message STGraphCost {
+  optional double unit_t = 1 [default = 1.0];
+  optional double unit_s = 2 [default = 1.0];
+  optional double t = 3;
+  optional double s = 4;
+  optional double totalcost = 5;
+}
 
 message SLFrameDebug {
   optional string name = 1;
@@ -76,6 +83,7 @@ message STGraphDebug {
   optional STGraphSpeedConstraint speed_constraint = 5;
   optional STGraphKernelCuiseRef kernel_cruise_ref = 6;
   optional STGraphKernelFollowRef kernel_follow_ref = 7;
+  repeated STGraphCost graph_cost = 8; // add by zabolotny
 }
 
 message SignalLightDebug {
