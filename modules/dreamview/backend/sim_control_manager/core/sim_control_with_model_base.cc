@@ -399,7 +399,8 @@ void SimControlWithModelBase::PublishLocalization(
   FillHeader(model_name, localization.get());
 
   auto* pose = localization->mutable_pose();
-
+  
+  localization->set_measurement_time(::apollo::cyber::Clock::NowInSeconds()); //zabolotny
   // Set position
   pose->mutable_position()->set_x(current_point_.x());
   pose->mutable_position()->set_y(current_point_.y());

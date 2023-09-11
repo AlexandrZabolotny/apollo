@@ -28,6 +28,7 @@
 #include "modules/common_msgs/planning_msgs/navigation.pb.h"
 #include "modules/common_msgs/planning_msgs/planning.pb.h"
 #include "modules/common_msgs/prediction_msgs/prediction_obstacle.pb.h"
+#include "modules/common_msgs/control_msgs/control_cmd.pb.h"
 
 #include "cyber/cyber.h"
 #include "modules/dreamview/backend/common/dreamview_gflags.h"
@@ -93,6 +94,8 @@ class SimPerfectControl final : public SimControlBase {
   void OnPredictionObstacles(
       const std::shared_ptr<apollo::prediction::PredictionObstacles>
           &obstacles);
+  // zabolotny
+  void OnControlCommand(const apollo::control::ControlCommand& control_command);
 
   /**
    * @brief Predict the next trajectory point using perfect control model
@@ -149,6 +152,11 @@ class SimPerfectControl final : public SimControlBase {
       navigation_reader_;
   std::shared_ptr<cyber::Reader<apollo::prediction::PredictionObstacles>>
       prediction_reader_;
+//zabolotny
+  std::shared_ptr<cyber::Reader<apollo::control::ControlCommand>>
+      control_command_reader_;
+  apollo::control::ControlCommand control_cmd_;
+
 
   std::shared_ptr<cyber::Writer<apollo::localization::LocalizationEstimate>>
       localization_writer_;

@@ -45,6 +45,7 @@ using apollo::relative_map::NavigationInfo;
 using apollo::routing::RoutingResponse;
 using apollo::routing::RoutingRequest;
 using Json = nlohmann::json;
+using apollo::control::ControlCommand;
 
 namespace {
 
@@ -99,6 +100,13 @@ void SimPerfectControl::InitTimerAndIO() {
       FLAGS_prediction_topic,
       [this](const std::shared_ptr<PredictionObstacles> &obstacles) {
         this->OnPredictionObstacles(obstacles);
+      });
+  //zabolotny for E2E get steer and pedals
+  control_command_reader_ = node_->CreateReader<ControlCommand>(
+      FLAGS_control_command_topic,
+      [this](const std::shared_ptr<ControlCommand>& cmd) {
+        ADEBUG << "Received control data: run canbus callback.";
+        OnControlCommand(*cmd);
       });
 
   localization_writer_ =
@@ -325,6 +333,16 @@ void SimPerfectControl::OnPredictionObstacles(
   send_dummy_prediction_ = obstacles->header().module_name() == "SimPrediction";
 }
 
+//zabolotny
+void SimPerfectControl::OnControlCommand(
+    const ControlCommand& control_cmd) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (!enabled_) {
+    return;
+  }
+  control_cmd_ = control_cmd;
+}
+
 void SimPerfectControl::Start() {
   std::lock_guard<std::mutex> lock(mutex_);
 
@@ -465,9 +483,10 @@ void SimPerfectControl::PublishChassis(double cur_speed,
   if (gear_position == canbus::Chassis::GEAR_REVERSE) {
     chassis->set_speed_mps(-chassis->speed_mps());
   }
-
-  chassis->set_throttle_percentage(0.0);
-  chassis->set_brake_percentage(0.0);
+  //zabolotny
+  chassis->set_steering_percentage(control_cmd_.steering_target());
+  chassis->set_throttle_percentage(control_cmd_.throttle());
+  chassis->set_brake_percentage(control_cmd_.brake());
 
   chassis_writer_->Write(chassis);
 }
@@ -479,7 +498,8 @@ void SimPerfectControl::PublishLocalization(const TrajectoryPoint &point) {
   auto *pose = localization->mutable_pose();
   auto prev = prev_point_.path_point();
   auto next = next_point_.path_point();
-
+  
+  localization->set_measurement_time(::apollo::cyber::Clock::NowInSeconds()); //zabolotny
   // Set position
   pose->mutable_position()->set_x(point.path_point().x());
   pose->mutable_position()->set_y(point.path_point().y());

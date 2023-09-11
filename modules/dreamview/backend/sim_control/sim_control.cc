@@ -456,6 +456,7 @@ void SimControl::PublishLocalization(const TrajectoryPoint& point) {
   auto prev = prev_point_.path_point();
   auto next = next_point_.path_point();
 
+  localization->set_measurement_time(::apollo::cyber::Clock::NowInSeconds()); //zabolotny
   // Set position
   pose->mutable_position()->set_x(point.path_point().x());
   pose->mutable_position()->set_y(point.path_point().y());

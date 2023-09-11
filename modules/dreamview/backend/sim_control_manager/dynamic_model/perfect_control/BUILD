@@ -21,6 +21,7 @@ cc_library(
         "//modules/common_msgs/planning_msgs:planning_cc_proto",
         "//modules/common_msgs/prediction_msgs:prediction_obstacle_cc_proto",
         "//modules/common_msgs/prediction_msgs:scenario_cc_proto",
+        "//modules/common_msgs/control_msgs:control_cmd_cc_proto",
         "@com_google_googletest//:gtest",
     ],
 )
